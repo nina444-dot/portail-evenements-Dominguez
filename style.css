@@ -16,3 +16,22 @@ body {
 	background-color: var(--clair);
 	color: var(--text-dark);
 }
+
+/* Header */
+.site-header {
+	background-color: var(--primary);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px;
+}
+button#theme-toggle {
+	padding: 0.5rem 0.75rem;
+	border-radius: 8px;
+	/*Supprime la bordure par défaut*/
+	border: none;
+	background: var(--secondary);
+	color: var(--text-light);
+	/*La souris devient une main*/
+	cursor: pointer;
+}
