@@ -35,3 +35,20 @@ button#theme-toggle {
 	/*La souris devient une main*/
 	cursor: pointer;
 }
+
+main {
+	display: flex;
+	/*Espace entre les sections*/
+	gap: var(--gap);
+	padding: 16px;
+}
+
+/* Events */
+.events-section {
+	width: 50%;
+}
+.cards-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	gap: 16px;
+}
