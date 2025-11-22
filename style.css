@@ -7,5 +7,12 @@
 	--text-light: #eee;
 	--text-dark: #222;
 	--card-radius: 12px;
-	--gap: 1rem;
+	--gap: 10px;
+}
+
+body {
+	margin: 0;
+	font-family: "DM Serif Text", serif;
+	background-color: var(--clair);
+	color: var(--text-dark);
 }
