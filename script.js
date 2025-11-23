@@ -19,6 +19,22 @@ const boutonTheme = document.getElementById("theme-toggle");
 let events = [];
 let favorites = loadFavorites();
 
+// Fontions: API
+async function loadEvents() {
+	try {
+		const res = await fetch(API_URL);
+		const data = await res.json();
+		events = data.events || data;
+
+		renderEvents();
+		renderFavorites();
+	} catch (err) {
+		eventsListEl.innerHTML =
+			"<p>Erreur lors du chargement des événements.</p>";
+		console.error("Erreur API :", err);
+	}
+}
+
 // Crée le cookie avec une durée d'un an
 function setCookie(name, value, days = 365) {
 	// Calculer la date d'expiration
@@ -32,14 +48,14 @@ function setCookie(name, value, days = 365) {
 	document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }
 
-// Lire un cookie
+// Lire le cookie
 function getCookie(name) {
-	const cookies = document.cookie.split(";"); // Séparer tous les cookies
+	const cookies = document.cookie.split(";"); // Sépare tous les cookies
 
 	for (let c of cookies) {
-		c = c.trim(); // enlever les espaces
+		c = c.trim(); //supprime les espaces au début et à la fin de la chaine
 		if (c.startsWith(name + "=")) {
-			return c.substring(name.length + 1); // retourner la valeur
+			return c.substring(name.length + 1); // retourne la valeur
 		}
 	}
 
