@@ -207,3 +207,45 @@ function renderFavorites() {
 		}
 	});
 }
+
+// Fonctions: Création des Cartes Evenement
+
+// Génère une carte HTML pour représenter un événement dans la liste principale
+function createCard(ev) {
+	const card = document.createElement("article"); // Création du conteneur
+	card.className = "card"; // Classe CSS pour le style général
+
+	// Contenu visuel de la carte : titre, date, lieu, boutons
+	card.innerHTML = `
+        <h3 class="card-title">${getTitle(ev)}</h3>
+        <p class="card-meta">${ev.start_date || ""} — ${
+		ev.venue?.venue || "Lieu inconnu"
+	}</p>
+        <div class="card-actions">
+            <button class="btn btn-detail">Détails</button>
+            <button class="btn btn-fav">${
+				isFavorite(ev.id) ? "Retirer" : "Ajouter"
+			}</button>
+        </div>
+    `;
+
+	// Bouton "Détails" = ouvre la modale avec les infos de l'événement
+	card.querySelector(".btn-detail").onclick = () => showModal(ev);
+
+	// Bouton "Ajouter/Retirer" = gère les favoris
+	card.querySelector(".btn-fav").onclick = () => toggleFavorite(ev.id);
+
+	// On renvoie la carte complète pour qu'elle soit ajoutée dans la page
+	return card;
+}
+
+// Affiche toutes les cartes des événements dans la zone principale
+function renderEvents() {
+	eventsListEl.innerHTML = ""; // On efface l'ancien contenu
+
+	// Pour chaque événement reçu depuis l'API
+	events.forEach((ev) => {
+		// On crée une carte et on l'ajoute dans le conteneur principal
+		eventsListEl.appendChild(createCard(ev));
+	});
+}
