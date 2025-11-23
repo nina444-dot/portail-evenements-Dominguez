@@ -61,3 +61,12 @@ function getCookie(name) {
 
 	return "";
 }
+
+//Stockage des Favoris (localStorage)
+function loadFavorites() {
+	return JSON.parse(localStorage.getItem("portail_favorites_v1") || "[]");
+}
+
+function saveFavorites() {
+	localStorage.setItem("portail_favorites_v1", JSON.stringify(favorites));
+}
