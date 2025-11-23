@@ -25,6 +25,7 @@ async function loadEvents() {
 	try {
 		const res = await fetch(API_URL); // Requête HTTP vers l'API
 		const data = await res.json(); // Conversion de la réponse en JSON
+		console.log("Données API:", data); //Vérifie la structure des données retourné dans la console
 		events = data.events || data; // Récupération de la liste des événements
 
 		renderEvents(); // Affiche les événements
