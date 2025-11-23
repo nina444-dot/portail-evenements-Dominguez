@@ -70,3 +70,29 @@ function loadFavorites() {
 function saveFavorites() {
 	localStorage.setItem("portail_favorites_v1", JSON.stringify(favorites));
 }
+
+// Fonction: Theme SOMBRE/CLAIR (via cookie)
+function applySavedTheme() {
+	const theme = getCookie("theme");
+
+	if (theme === "dark") {
+		document.body.classList.add("theme-sombre");
+		boutonTheme.textContent = "Mode clair";
+	} else {
+		document.body.classList.remove("theme-sombre");
+		boutonTheme.textContent = "Mode sombre";
+	}
+}
+
+function toggleTheme() {
+	const isDark = document.body.classList.toggle("theme-sombre");
+
+	boutonTheme.textContent = isDark ? "Mode clair" : "Mode sombre";
+
+	// sauvegarde dans un cookie valable 1 an
+	setCookie("theme", isDark ? "dark" : "light", 365);
+}
+
+function initThemeButton() {
+	boutonTheme.addEventListener("click", toggleTheme);
+}
