@@ -135,3 +135,28 @@ main {
 	font-size: 21px;
 	cursor: pointer;
 }
+/* Mode Sombre */
+
+/*Body sombre*/
+body.theme-sombre {
+	background: var(--sombre);
+	color: var(--text-light);
+}
+/*Header sombre*/
+body.theme-sombre .site-header {
+	background-color: var(--sombre);
+}
+/*Card sombre*/
+body.theme-sombre .card {
+	background: #2f3438;
+	color: var(--text-light);
+}
+/*Planning sombre*/
+body.theme-sombre .planning-section {
+	background: rgba(255, 255, 255, 0.05);
+}
+/*Modale sombre*/
+body.theme-sombre .modal-content {
+	background: #222;
+	color: var(--text-light);
+}
