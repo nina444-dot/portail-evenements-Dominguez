@@ -249,3 +249,14 @@ function renderEvents() {
 		eventsListEl.appendChild(createCard(ev));
 	});
 }
+
+// Initialisation du Site
+function init() {
+	applySavedTheme(); // Charge le thème (clair/sombre) sauvegardé dans un cookie
+	initThemeButton(); // Active le bouton permettant de changer de thème
+	initModalButtons(); // Active les boutons d'ouverture/fermeture de la modale
+	loadEvents(); // Charge les événements depuis l'API puis les affiche
+}
+
+// Lancement du site au chargement de la page
+init();
