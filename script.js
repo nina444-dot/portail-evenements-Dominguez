@@ -95,7 +95,7 @@ function initThemeButton() {
 	boutonTheme.addEventListener("click", toggleTheme); // Clic sur le bouton = change de thème
 }
 
-// Fonction: Modale
+// Fonctions: Modale
 function getTitle(ev) {
 	return ev.title?.rendered || ev.title || ev.event_name || "Titre inconnu"; // Plusieurs choix possibles
 }
@@ -126,4 +126,84 @@ function hideModal() {
 function initModalButtons() {
 	modalBackdrop.onclick = hideModal; // Clic sur le fond = ferme
 	modalClose.onclick = hideModal; // Clic sur la croix = ferme
+}
+
+// Fonctions : Gestion des Favoris
+
+// Vérifie si un événement est dans les favoris
+// id : numéro unique de l'événement
+function isFavorite(id) {
+	// .includes() regarde si l'ID existe déjà dans le tableau "favorites"
+	return favorites.includes(id);
+}
+
+// Ajoute ou retire un événement des favoris
+function toggleFavorite(id) {
+	// Si l'événement est déjà dans les favoris
+	if (isFavorite(id)) {
+		// .filter() crée un nouveau tableau sans cet ID = donc retire des favoris
+		favorites = favorites.filter((f) => f !== id);
+	} else {
+		// Sinon, on ajoute l'ID dans le tableau
+		favorites.push(id);
+	}
+
+	// Sauvegarde le tableau mis à jour dans le localStorage
+	saveFavorites();
+
+	// Actualise l'affichage des cartes et des favoris
+	renderEvents(); // Met à jour les boutons "Ajouter/Retirer"
+	renderFavorites(); // Met à jour la liste des favoris dans la zone dédiée
+}
+
+// Crée l'affichage visuel d'un favori (dans la liste de droite)
+function createFavoriteItem(ev) {
+	// Création du conteneur HTML qui va représenter un favori
+	const div = document.createElement("div");
+	div.className = "fav-item"; // Classe CSS pour le style
+
+	// innerHTML ajoute le nom et la date de l'événement
+	div.innerHTML = `
+        <strong>${getTitle(ev)}</strong><br>
+        <small>${ev.start_date || ""}</small>
+    `;
+
+	// Bouton permettant de retirer cet événement des favoris
+	const btn = document.createElement("button");
+	btn.className = "btn"; // Classe CSS générique
+	btn.textContent = "Retirer"; // Texte affiché sur le bouton
+
+	// Lorsqu'on clique → retire ce favori
+	btn.onclick = () => toggleFavorite(ev.id);
+
+	// On ajoute le bouton dans le bloc du favori
+	div.appendChild(btn);
+
+	// On renvoie l'élément créé pour qu'il soit ajouté dans la liste
+	return div;
+}
+
+// Affiche la liste des favoris dans la colonne prévue
+function renderFavorites() {
+	// Si aucun favori enregistré
+	if (favorites.length === 0) {
+		// On remplace la zone par un simple texte
+		favsListEl.textContent = "Aucun événement ajouté.";
+		return; // On stoppe la fonction ici
+	}
+
+	// Sinon, on vide la zone avant de la remplir
+	favsListEl.innerHTML = "";
+
+	// Pour chaque ID présent dans les favoris
+	favorites.forEach((id) => {
+		// On retrouve l'événement correspondant dans la liste "events"
+		const ev = events.find((e) => e.id === id);
+
+		// Si l'événement existe encore
+		if (ev) {
+			// On crée l'élément visuel et on l'ajoute à l'affichage
+			favsListEl.appendChild(createFavoriteItem(ev));
+		}
+	});
 }
