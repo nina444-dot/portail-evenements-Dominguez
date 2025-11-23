@@ -15,3 +15,6 @@ const modalDesc = document.getElementById("modal-desc");
 const modalLink = document.getElementById("modal-link");
 
 const boutonTheme = document.getElementById("theme-toggle");
+
+let events = [];
+let favorites = loadFavorites();
