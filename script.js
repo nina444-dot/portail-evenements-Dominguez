@@ -2,97 +2,128 @@
 const API_URL =
 	"https://demo.theeventscalendar.com/wp-json/tribe/events/v1/events";
 
-const eventsListEl = document.getElementById("events-list");
-const favsListEl = document.getElementById("favorites-list");
+const eventsListEl = document.getElementById("events-list"); // Conteneur des événements
+const favsListEl = document.getElementById("favorites-list"); // Conteneur des favoris
 
-const modal = document.getElementById("modal");
-const modalBackdrop = document.getElementById("modal-backdrop");
-const modalClose = document.getElementById("modal-close");
-const modalTitle = document.getElementById("modal-title");
-const modalDate = document.getElementById("modal-datetime");
-const modalVenue = document.getElementById("modal-venue");
-const modalDesc = document.getElementById("modal-desc");
-const modalLink = document.getElementById("modal-link");
+const modal = document.getElementById("modal"); // Fenêtre modale
+const modalBackdrop = document.getElementById("modal-backdrop"); // Fond sombre derrière la modale
+const modalClose = document.getElementById("modal-close"); // Bouton de fermeture de la modale
+const modalTitle = document.getElementById("modal-title"); // Titre dans la modale
+const modalDate = document.getElementById("modal-datetime"); // Date dans la modale
+const modalVenue = document.getElementById("modal-venue"); // Lieu dans la modale
+const modalDesc = document.getElementById("modal-desc"); // Description dans la modale
+const modalLink = document.getElementById("modal-link"); // Lien vers la source
 
-const boutonTheme = document.getElementById("theme-toggle");
+const boutonTheme = document.getElementById("theme-toggle"); // Bouton pour changer le thème
 
-let events = [];
-let favorites = loadFavorites();
+// VARIABLES
+let events = []; // Stockage des événements
+let favorites = loadFavorites(); // Chargement des favoris depuis localStorage
 
 // Fontions: API
 async function loadEvents() {
 	try {
-		const res = await fetch(API_URL);
-		const data = await res.json();
-		events = data.events || data;
+		const res = await fetch(API_URL); // Requête HTTP vers l'API
+		const data = await res.json(); // Conversion de la réponse en JSON
+		events = data.events || data; // Récupération de la liste des événements
 
-		renderEvents();
-		renderFavorites();
+		renderEvents(); // Affiche les événements
+		renderFavorites(); // Met à jour les favoris affichés
 	} catch (err) {
 		eventsListEl.innerHTML =
-			"<p>Erreur lors du chargement des événements.</p>";
-		console.error("Erreur API :", err);
+			"<p>Erreur lors du chargement des événements.</p>"; // Message d'erreur
+		console.error("Erreur API :", err); // log en cas de problème
 	}
 }
 
-// Crée le cookie avec une durée d'un an
+// Crée un cookie avec une durée d'un an par défaut
 function setCookie(name, value, days = 365) {
-	// Calculer la date d'expiration
-	const date = new Date();
-	date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // jours en millisecondes
+	const date = new Date(); // Création d'une date
+	date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // Ajout de la durée en millisecondes
 
-	// Convertir la date en texte pour le cookie
-	const expires = "expires=" + date.toUTCString();
+	const expires = "expires=" + date.toUTCString(); // Transforme la date en chaine de caractere
 
-	// Créer le cookie valable sur tout le site
-	document.cookie = name + "=" + value + ";" + expires + ";path=/";
+	document.cookie = name + "=" + value + ";" + expires + ";path=/"; // Création du cookie
 }
 
-// Lire le cookie
+// Récuperer le cookie
 function getCookie(name) {
-	const cookies = document.cookie.split(";"); // Sépare tous les cookies
+	const cookies = document.cookie.split(";"); // Découpe tous les cookies
 
 	for (let c of cookies) {
-		c = c.trim(); //supprime les espaces au début et à la fin de la chaine
+		c = c.trim(); // Retire les espaces
 		if (c.startsWith(name + "=")) {
-			return c.substring(name.length + 1); // retourne la valeur
+			// Vérifie si c'est le bon cookie
+			return c.substring(name.length + 1); // Retourne sa valeur
 		}
 	}
 
-	return "";
+	return ""; // Retourne vide si aucun cookie trouvé
 }
 
 //Stockage des Favoris (localStorage)
 function loadFavorites() {
-	return JSON.parse(localStorage.getItem("portail_favorites_v1") || "[]");
+	return JSON.parse(localStorage.getItem("portail_favorites_v1") || "[]"); // Récupère et convertit
 }
 
 function saveFavorites() {
-	localStorage.setItem("portail_favorites_v1", JSON.stringify(favorites));
+	localStorage.setItem("portail_favorites_v1", JSON.stringify(favorites)); // Sauvegarde en JSON
 }
 
 // Fonction: Theme SOMBRE/CLAIR (via cookie)
 function applySavedTheme() {
-	const theme = getCookie("theme");
+	const theme = getCookie("theme"); // Lis le cookie du thème
 
 	if (theme === "dark") {
-		document.body.classList.add("theme-sombre");
-		boutonTheme.textContent = "Mode clair";
+		document.body.classList.add("theme-sombre"); // Applique le thème sombre
+		boutonTheme.textContent = "Mode clair"; // Met à jour le bouton
 	} else {
-		document.body.classList.remove("theme-sombre");
-		boutonTheme.textContent = "Mode sombre";
+		document.body.classList.remove("theme-sombre"); // Applique le thème clair
+		boutonTheme.textContent = "Mode sombre"; // Met à jour le bouton
 	}
 }
 
 function toggleTheme() {
-	const isDark = document.body.classList.toggle("theme-sombre");
+	const isDark = document.body.classList.toggle("theme-sombre"); // Inverse le thème
 
-	boutonTheme.textContent = isDark ? "Mode clair" : "Mode sombre";
+	boutonTheme.textContent = isDark ? "Mode clair" : "Mode sombre"; // Change le texte du bouton
 
-	// sauvegarde dans un cookie valable 1 an
-	setCookie("theme", isDark ? "dark" : "light", 365);
+	setCookie("theme", isDark ? "dark" : "light", 365); // Enregistre le choix pendant 1 an
 }
 
 function initThemeButton() {
-	boutonTheme.addEventListener("click", toggleTheme);
+	boutonTheme.addEventListener("click", toggleTheme); // Clic sur le bouton = change de thème
+}
+
+// Fonction: Modale
+function getTitle(ev) {
+	return ev.title?.rendered || ev.title || ev.event_name || "Titre inconnu"; // Plusieurs choix possibles
+}
+
+function getDescription(ev) {
+	return (
+		ev.excerpt || ev.description || "<p>Aucune description disponible.</p>" // Retourne description ou texte par défaut
+	);
+}
+
+function fillModal(ev) {
+	modalTitle.textContent = getTitle(ev); // Remplit le titre
+	modalDate.textContent = "Date : " + (ev.start_date || "Non renseigné"); // Remplit la date
+	modalVenue.textContent = "Lieu : " + (ev.venue?.venue || "Inconnu"); // Remplit le lieu
+	modalDesc.innerHTML = getDescription(ev); // Remplit la description
+	modalLink.href = ev.url || "#"; // Ajoute le lien
+}
+
+function showModal(ev) {
+	fillModal(ev); // Charge les informations dans la modale
+	modal.classList.add("show"); // Affiche la modale
+}
+
+function hideModal() {
+	modal.classList.remove("show"); // Ferme la modale
+}
+
+function initModalButtons() {
+	modalBackdrop.onclick = hideModal; // Clic sur le fond = ferme
+	modalClose.onclick = hideModal; // Clic sur la croix = ferme
 }
