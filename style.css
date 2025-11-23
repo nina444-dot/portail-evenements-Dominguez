@@ -160,3 +160,9 @@ body.theme-sombre .modal-content {
 	background: #222;
 	color: var(--text-light);
 }
+/* Responsive */
+@media (max-width: 800px) {
+	main {
+		flex-direction: column;
+	}
+}
